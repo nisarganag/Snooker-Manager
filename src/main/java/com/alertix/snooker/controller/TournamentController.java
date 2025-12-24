@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +56,12 @@ public class TournamentController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteTournament(@RequestBody IdRequest request) {
         tournamentService.deleteTournament(request.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/register")
+    public ResponseEntity<?> registerUser(@PathVariable Long id, @RequestBody IdRequest request) {
+        tournamentService.registerUser(id, request.getId());
         return ResponseEntity.ok().build();
     }
 }

@@ -1,0 +1,129 @@
+{
+  "properties": [
+    {
+      "name": "google.oauth2.redirect.uri.local",
+      "type": "java.lang.String",
+      "description": "Local redirect URI for Google OAuth."
+    },
+    {
+      "name": "google.oauth2.redirect.uri.dev",
+      "type": "java.lang.String",
+      "description": "Dev redirect URI for Google OAuth."
+    },
+    {
+      "name": "google.oauth2.redirect.uri.production",
+      "type": "java.lang.String",
+      "description": "Production redirect URI for Google OAuth."
+    },
+    {
+      "name": "google.client-id",
+      "type": "java.lang.String",
+      "description": "Google Client ID."
+    },
+    {
+      "name": "google.client-secret",
+      "type": "java.lang.String",
+      "description": "Google Client Secret."
+    },
+    {
+      "name": "google.refresh.token",
+      "type": "java.lang.String",
+      "description": "Google Refresh Token."
+    },
+    {
+      "name": "frontend.reset-password-url",
+      "type": "java.lang.String",
+      "description": "Frontend URL for password reset."
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT Secret Key."
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.Integer",
+      "description": "JWT Expiration time."
+    },
+    {
+      "name": "app.mail.info.host",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.info.port",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "app.mail.info.username",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.info.password",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.info.properties.mail.smtp.auth",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "app.mail.info.properties.mail.smtp.ssl.enable",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "app.mail.support.host",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.support.port",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "app.mail.support.username",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.support.password",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.support.properties.mail.smtp.auth",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "app.mail.support.properties.mail.smtp.ssl.enable",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "app.mail.promo.host",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.promo.port",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "app.mail.promo.username",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.promo.password",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "app.mail.promo.properties.mail.smtp.auth",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "app.mail.promo.properties.mail.smtp.ssl.enable",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "app.redirect.url",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "env",
+      "type": "java.lang.String"
+    }
+  ]
+}

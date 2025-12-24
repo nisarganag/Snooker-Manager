@@ -50,6 +50,13 @@ sequenceDiagram
     Backend-->>Frontend: 200 OK (Match Created)
 ```
 
+### Password Reset Flow
+
+1. **Forgot Password**: User enters email → POST `/api/auth/forgot-password` `{ "email": "..." }`
+2. **Email Sent**: Backend sends reset link to user's email
+3. **Reset Password**: User clicks link with token → POST `/api/auth/reset-password` `{ "token": "...", "newPassword": "..." }`
+4. **Success**: User can now login with new password
+
 ---
 
 ## 3. Page Integration Guide
@@ -69,7 +76,21 @@ sequenceDiagram
 - **Goal**: Show brackets or list of tournaments.
 - **Endpoints**:
   - `POST /api/tournaments/all` (Get list)
+  - `POST /api/tournaments/all` (Get list)
   - `POST /api/matches/tournament` payload: `{ "id": 1 }` (Get matches for a tournament)
+
+#### 3. Tournament Registration
+
+- **Goal**: Allow users to register for tournaments.
+- **Endpoint**: `POST /api/tournaments/{id}/register` with body `{ "id": userId }`
+- **Note**: Sends confirmation email to registered user.
+
+#### 4. Newsletter Subscription
+
+- **Goal**: Footer component for email updates.
+- **Endpoints**:
+  - Subscribe: `POST /api/newsletter/subscribe` `{ "email": "user@example.com" }`
+  - Unsubscribe: `POST /api/newsletter/unsubscribe` `{ "email": "user@example.com" }`
 
 ---
 
@@ -84,7 +105,18 @@ sequenceDiagram
 
 - **Actions**: Create a match, assign Players and Referee.
 - **Endpoints**: `/api/matches/create`
+- **Endpoints**: `/api/matches/create`
 - **Prerequisite**: Call `/api/players/all` and `/api/tournaments/all` to populate dropdowns.
+
+#### 3. User Management
+
+- **Goal**: Manage user accounts (view, edit, delete).
+- **Endpoints**:
+  - List all users: `POST /api/users/all`
+  - Get user details: `POST /api/users/get` `{ "id": userId }`
+  - Update user: `POST /api/users/update` `{ "id": ..., "username": ..., "email": ..., "roles": [...] }`
+  - Delete user: `POST /api/users/delete` `{ "id": userId }`
+- **Note**: Password updates are optional and automatically encrypted.
 
 ---
 
@@ -140,3 +172,35 @@ sequenceDiagram
 
     Viewer(WS)->>Viewer(WS): Update UI Scoreboard
 ```
+
+---
+
+### E. User Profile Dashboard (Role: USER)
+
+#### Profile Photo Management
+
+- **Upload Photo**:
+
+  - Endpoint: `POST /api/users/{id}/photo`
+  - Method: Multipart form data with `file` field
+  - Constraints: Max 2MB, JPEG/PNG
+  - Example (JavaScript):
+    ```javascript
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    fetch(`/api/users/${userId}/photo`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+    ```
+
+- **Display Photo**:
+  - Endpoint: `GET /api/users/{id}/photo`
+  - Returns: Image binary (JPEG)
+  - Example: `<img src="/api/users/${userId}/photo" alt="Profile" />`
+
+#### View Registered Tournaments
+
+- Use the tournament registration endpoint to fetch user's tournaments
+- Display upcoming matches for registered tournaments

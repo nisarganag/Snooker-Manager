@@ -22,9 +22,10 @@ import com.alertix.snooker.repository.MatchRepository;
 import com.alertix.snooker.repository.PlayerRepository;
 import com.alertix.snooker.repository.TournamentRepository;
 import com.alertix.snooker.repository.UserRepository;
-import com.alertix.snooker.utils.EmailTemplateUtils;
 import com.alertix.snooker.service.EmailService;
 import com.alertix.snooker.service.MatchService;
+import com.alertix.snooker.service.NotificationService;
+import com.alertix.snooker.utils.EmailTemplateUtils;
 
 @Service
 public class MatchServiceImpl implements MatchService {
@@ -48,6 +49,9 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public List<Match> getAllMatches() {
@@ -76,7 +80,9 @@ public class MatchServiceImpl implements MatchService {
             throw new IllegalArgumentException("Match request cannot be null");
         }
         Match match = new Match();
-        return saveOrUpdateMatchFromRequest(match, request);
+        Match savedMatch = saveOrUpdateMatchFromRequest(match, request);
+        notificationService.sendMatchScheduleNotification(savedMatch);
+        return savedMatch;
     }
 
     @Override
@@ -87,8 +93,14 @@ public class MatchServiceImpl implements MatchService {
         if (request == null) {
             throw new IllegalArgumentException("Match request cannot be null");
         }
-        return matchRepository.findById(id).map(m -> saveOrUpdateMatchFromRequest(m, request))
-                .orElseThrow(() -> new RuntimeException("Match not found"));
+        return matchRepository.findById(id).map(m -> {
+            boolean timeChanged = request.getStartTime() != null && !request.getStartTime().equals(m.getStartTime());
+            Match savedMatch = saveOrUpdateMatchFromRequest(m, request);
+            if (timeChanged) {
+                notificationService.sendMatchRescheduleNotification(savedMatch);
+            }
+            return savedMatch;
+        }).orElseThrow(() -> new RuntimeException("Match not found"));
     }
 
     private Match saveOrUpdateMatchFromRequest(Match match, MatchRequest request) {

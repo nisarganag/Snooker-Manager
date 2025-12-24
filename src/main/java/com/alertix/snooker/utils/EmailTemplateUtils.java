@@ -82,4 +82,42 @@ public class EmailTemplateUtils {
                 "<a href='#' class='button'>View Full Details</a>";
         return getBaseTemplate("New Match Result!", body);
     }
+
+    public static String getTournamentRegistrationEmail(String tournamentName, String startDate) {
+        String body = "<h2 style='color: " + HEADER_COLOR + "; margin-top: 0;'>Registration Confirmed!</h2>" +
+                "<p>You represent officially registered for the <strong>" + tournamentName + "</strong>.</p>" +
+                "<p>The tournament begins on: <strong>" + startDate + "</strong></p>" +
+                "<p>Good luck!</p>" +
+                "<a href='#' class='button'>View Tournament</a>";
+        return getBaseTemplate("Tournament Registration", body);
+    }
+
+    public static String getMatchScheduleEmail(String tournamentName, String opponentName, String time) {
+        String body = "<h2 style='color: " + HEADER_COLOR + "; margin-top: 0;'>Match Scheduled</h2>" +
+                "<p>Your match in the <strong>" + tournamentName + "</strong> has been scheduled.</p>" +
+                "<p><strong>Opponent:</strong> " + opponentName + "</p>" +
+                "<p><strong>Time:</strong> " + time + "</p>" +
+                "<p>Please be ready 15 minutes before the start time.</p>" +
+                "<a href='#' class='button'>View Match Details</a>";
+        return getBaseTemplate("New Match Scheduled", body);
+    }
+
+    public static String getMatchRescheduleEmail(String tournamentName, String opponentName, String newTime) {
+        String body = "<h2 style='color: " + HEADER_COLOR + "; margin-top: 0;'>Match Rescheduled</h2>" +
+                "<p>Your match in the <strong>" + tournamentName + "</strong> against <strong>" + opponentName
+                + "</strong> has a new time.</p>" +
+                "<p><strong>New Time:</strong> " + newTime + "</p>" +
+                "<a href='#' class='button'>Confirm Availability</a>";
+        return getBaseTemplate("Match Time Changed", body);
+    }
+
+    public static String getDailyRecapEmail(String content) {
+        String body = "<h2 style='color: " + HEADER_COLOR + "; margin-top: 0;'>Daily Snippets</h2>" +
+                "<p>Here are the latest results and updates from today's matches:</p>" +
+                "<div style='background: #fdfdfd; padding: 15px; border-left: 4px solid " + ACCENT_COLOR + ";'>" +
+                content +
+                "</div>" +
+                "<a href='#' class='button'>View All Results</a>";
+        return getBaseTemplate("Daily Recap", body);
+    }
 }

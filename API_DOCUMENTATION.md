@@ -66,6 +66,32 @@ Register a new user.
   }
   ```
 
+### Forgot Password
+
+- **URL**: `/api/auth/forgot-password`
+- **Method**: `POST`
+- **Body**: `ForgotPasswordRequest`
+  ```json
+  {
+    "email": "user@example.com"
+  }
+  ```
+- **Response**: `MessageResponse`
+- **Note**: Sends password reset email if user exists.
+
+### Reset Password
+
+- **URL**: `/api/auth/reset-password`
+- **Method**: `POST`
+- **Body**: `ResetPasswordRequest`
+  ```json
+  {
+    "token": "uuid-token-from-email",
+    "newPassword": "newPassword123"
+  }
+  ```
+- **Response**: `MessageResponse`
+
 ---
 
 ## 2. Player Controller (`/api/players`)
@@ -150,9 +176,31 @@ Register a new user.
   }
   ```
 
-### Update/Delete
+### Update Tournament (Admin)
 
-- Similar structure to Player Controller using `/update` and `/delete` endpoints.
+- **URL**: `/api/tournaments/update`
+- **Method**: `POST`
+- **Body**: `Tournament` object (must include ID)
+
+### Delete Tournament (Admin)
+
+- **URL**: `/api/tournaments/delete`
+- **Method**: `POST`
+- **Body**: `IdRequest`
+
+### Register User to Tournament
+
+- **URL**: `/api/tournaments/{id}/register`
+- **Method**: `POST`
+- **Path Variable**: `id` (Tournament ID)
+- **Body**: `IdRequest`
+  ```json
+  {
+    "id": 5 // User ID
+  }
+  ```
+- **Response**: Success message
+- **Note**: Sends registration confirmation email.
 
 ---
 
@@ -198,6 +246,66 @@ Register a new user.
     "startTime": "2023-10-10T14:00:00"
   }
   ```
+
+### Filter Matches by Status
+
+- **URL**: `/api/matches/filter`
+- **Method**: `POST`
+- **Body**: `MatchStatusRequest`
+  ```json
+  {
+    "status": "LIVE" // LIVE, SCHEDULED, COMPLETED
+  }
+  ```
+- **Response**: `List<Match>`
+
+### Update Match Status (Admin/Referee)
+
+- **URL**: `/api/matches/status`
+- **Method**: `POST`
+- **Body**: `MatchStatusRequest`
+  ```json
+  {
+    "matchId": 1,
+    "status": "LIVE"
+  }
+  ```
+- **Response**: Updated `Match`
+
+### Record Match Event (Admin/Referee)
+
+- **URL**: `/api/matches/event`
+- **Method**: `POST`
+- **Body**: `EventRequest`
+  ```json
+  {
+    "frameId": 10,
+    "playerId": 2,
+    "type": "POT", // POT, FOUL, MISS, SAFETY, END_FRAME
+    "points": 1,
+    "details": "Red"
+  }
+  ```
+- **Response**: `MatchEvent`
+- **Note**: Triggers WebSocket broadcast to `/topic/match/{matchId}`
+
+### Undo Last Event (Admin/Referee)
+
+- **URL**: `/api/matches/undo`
+- **Method**: `POST`
+- **Body**: `IdRequest` (Frame ID)
+  ```json
+  {
+    "id": 10
+  }
+  ```
+- **Response**: Success message
+
+### Delete Match (Admin)
+
+- **URL**: `/api/matches/delete`
+- **Method**: `POST`
+- **Body**: `IdRequest`
 
 ---
 
@@ -266,3 +374,88 @@ Register a new user.
     "currentBreakPlayerId": 1
   }
   ```
+
+---
+
+## 8. Newsletter Controller (`/api/newsletter`)
+
+### Subscribe to Newsletter
+
+- **URL**: `/api/newsletter/subscribe`
+- **Method**: `POST`
+- **Body**: `NewsletterRequest`
+  ```json
+  {
+    "email": "user@example.com"
+  }
+  ```
+- **Response**: `MessageResponse`
+
+### Unsubscribe from Newsletter
+
+- **URL**: `/api/newsletter/unsubscribe`
+- **Method**: `POST`
+- **Body**: `NewsletterRequest`
+  ```json
+  {
+    "email": "user@example.com"
+  }
+  ```
+- **Response**: `MessageResponse`
+
+---
+
+## 9. User Controller (`/api/users`)
+
+### Upload Profile Photo
+
+- **URL**: `/api/users/{id}/photo`
+- **Method**: `POST`
+- **Path Variable**: `id` (User ID)
+- **Body**: Multipart form data with `file` field
+- **Constraints**: Max 2MB, JPEG/PNG
+- **Response**: `MessageResponse`
+
+### Get Profile Photo
+
+- **URL**: `/api/users/{id}/photo`
+- **Method**: `GET`
+- **Path Variable**: `id` (User ID)
+- **Response**: Image binary (JPEG)
+
+### Get All Users
+
+- **URL**: `/api/users/all`
+- **Method**: `POST`
+- **Response**: `List<User>`
+
+### Get User by ID
+
+- **URL**: `/api/users/get`
+- **Method**: `POST`
+- **Body**: `IdRequest`
+- **Response**: `User`
+
+### Update User
+
+- **URL**: `/api/users/update`
+- **Method**: `POST`
+- **Body**: `UserUpdateRequest`
+  ```json
+  {
+    "id": 123,
+    "username": "newname",
+    "email": "new@email.com",
+    "password": "newPassword123", // Optional
+    "roles": ["admin", "referee"] // Optional
+  }
+  ```
+- **Response**: Updated `User`
+- **Note**: Password is automatically encrypted if provided.
+
+### Delete User
+
+- **URL**: `/api/users/delete`
+- **Method**: `POST`
+- **Body**: `IdRequest`
+- **Response**: Success message
