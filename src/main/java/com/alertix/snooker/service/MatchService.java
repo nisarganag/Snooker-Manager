@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.alertix.snooker.domain.Match;
+import com.alertix.snooker.domain.MatchEvent;
 import com.alertix.snooker.domain.MatchStatus;
+import com.alertix.snooker.payload.request.EventRequest;
 import com.alertix.snooker.payload.request.MatchRequest;
 
 public interface MatchService {
@@ -21,4 +23,8 @@ public interface MatchService {
     Match updateMatchStatus(Long id, MatchStatus status);
 
     void deleteMatch(Long id);
+
+    MatchEvent recordEvent(EventRequest request);
+
+    void undoLastEvent(Long frameId);
 }

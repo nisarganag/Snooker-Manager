@@ -6,12 +6,18 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alertix.snooker.domain.Frame;
 import com.alertix.snooker.domain.Match;
+import com.alertix.snooker.domain.MatchEvent;
+import com.alertix.snooker.domain.MatchEventType;
 import com.alertix.snooker.domain.MatchStatus;
 import com.alertix.snooker.domain.Player;
 import com.alertix.snooker.domain.Tournament;
 import com.alertix.snooker.domain.User;
+import com.alertix.snooker.payload.request.EventRequest;
 import com.alertix.snooker.payload.request.MatchRequest;
+import com.alertix.snooker.repository.FrameRepository;
+import com.alertix.snooker.repository.MatchEventRepository;
 import com.alertix.snooker.repository.MatchRepository;
 import com.alertix.snooker.repository.PlayerRepository;
 import com.alertix.snooker.repository.TournamentRepository;
@@ -31,6 +37,12 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MatchEventRepository matchEventRepository;
+
+    @Autowired
+    private FrameRepository frameRepository;
 
     @Override
     public List<Match> getAllMatches() {
@@ -127,5 +139,77 @@ public class MatchServiceImpl implements MatchService {
             throw new IllegalArgumentException("Match ID cannot be null");
         }
         matchRepository.deleteById(id);
+    }
+
+    @Override
+    public MatchEvent recordEvent(EventRequest request) {
+        if (request == null)
+            throw new IllegalArgumentException("Event request cannot be null");
+
+        Long frameId = request.getFrameId();
+        if (frameId == null) {
+            throw new IllegalArgumentException("Frame ID cannot be null");
+        }
+        Frame frame = frameRepository.findById(frameId)
+                .orElseThrow(() -> new RuntimeException("Frame not found"));
+
+        Player player = null;
+        Long playerId = request.getPlayerId();
+        if (playerId != null) {
+            player = playerRepository.findById(playerId)
+                    .orElseThrow(() -> new RuntimeException("Player not found"));
+        }
+
+        MatchEvent event = new MatchEvent(frame, player, request.getType(), request.getPoints(), request.getDetails());
+        matchEventRepository.save(event);
+
+        boolean isPlayer1 = player != null && player.getId().equals(frame.getMatch().getPlayer1().getId());
+
+        if (request.getType() == MatchEventType.FOUL) {
+            if (isPlayer1) {
+                frame.setPointsPlayer2(frame.getPointsPlayer2() + request.getPoints());
+            } else {
+                frame.setPointsPlayer1(frame.getPointsPlayer1() + request.getPoints());
+            }
+        } else {
+            if (isPlayer1) {
+                frame.setPointsPlayer1(frame.getPointsPlayer1() + request.getPoints());
+            } else {
+                frame.setPointsPlayer2(frame.getPointsPlayer2() + request.getPoints());
+            }
+        }
+
+        frameRepository.save(frame);
+        return event;
+    }
+
+    @Override
+    public void undoLastEvent(Long frameId) {
+        List<MatchEvent> events = matchEventRepository.findByFrameIdOrderByTimestampDesc(frameId);
+        if (events.isEmpty())
+            return;
+
+        MatchEvent lastEvent = events.get(0);
+        Frame frame = lastEvent.getFrame();
+        Player player = lastEvent.getPlayer();
+
+        boolean isPlayer1 = player != null && player.getId().equals(frame.getMatch().getPlayer1().getId());
+
+        if (lastEvent.getType() == MatchEventType.FOUL) {
+            if (isPlayer1) {
+                frame.setPointsPlayer2(frame.getPointsPlayer2() - lastEvent.getPoints());
+            } else {
+                frame.setPointsPlayer1(frame.getPointsPlayer1() - lastEvent.getPoints());
+            }
+        } else {
+            if (isPlayer1) {
+                frame.setPointsPlayer1(frame.getPointsPlayer1() - lastEvent.getPoints());
+            } else {
+                frame.setPointsPlayer2(frame.getPointsPlayer2() - lastEvent.getPoints());
+            }
+        }
+
+        matchEventRepository.delete(lastEvent);
+        frameRepository.save(frame);
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alertix.snooker.domain.Match;
+import com.alertix.snooker.domain.MatchEvent;
+import com.alertix.snooker.payload.request.EventRequest;
 import com.alertix.snooker.payload.request.IdRequest;
 import com.alertix.snooker.payload.request.MatchRequest;
 import com.alertix.snooker.payload.request.MatchStatusRequest;
@@ -79,6 +81,20 @@ public class MatchController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/event")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REFEREE')")
+    public ResponseEntity<MatchEvent> recordEvent(@RequestBody EventRequest request) {
+        return ResponseEntity.ok(matchService.recordEvent(request));
+    }
+
+    @PostMapping("/undo")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REFEREE')")
+    public ResponseEntity<?> undoLastEvent(@RequestBody IdRequest request) {
+        // ID in request is frameId
+        matchService.undoLastEvent(request.getId());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/delete")
