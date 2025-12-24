@@ -1,0 +1,76 @@
+package com.alertix.snooker.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.alertix.snooker.domain.Match;
+import com.alertix.snooker.payload.request.IdRequest;
+import com.alertix.snooker.payload.request.MatchStatusRequest;
+import com.alertix.snooker.service.MatchService;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/api/matches")
+public class MatchController {
+
+    @Autowired
+    private MatchService matchService;
+
+    @PostMapping("/all")
+    public List<Match> getAllMatches() {
+        return matchService.getAllMatches();
+    }
+
+    @PostMapping("/tournament")
+    public List<Match> getMatchesByTournament(@RequestBody IdRequest request) {
+        return matchService.getMatchesByTournament(request.getId());
+    }
+
+    @PostMapping("/get")
+    public ResponseEntity<Match> getMatchById(@RequestBody IdRequest request) {
+        return matchService.getMatchById(request.getId())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Match createMatch(@RequestBody Match match) {
+        return matchService.createMatch(match);
+    }
+
+    @PostMapping("/update")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REFEREE')")
+    public ResponseEntity<Match> updateMatch(@RequestBody Match match) {
+        try {
+            return ResponseEntity.ok(matchService.updateMatch(match.getId(), match));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/status")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REFEREE')")
+    public ResponseEntity<Match> updateMatchStatus(@RequestBody MatchStatusRequest request) {
+        try {
+            return ResponseEntity.ok(matchService.updateMatchStatus(request.getMatchId(), request.getStatus()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteMatch(@RequestBody IdRequest request) {
+        matchService.deleteMatch(request.getId());
+        return ResponseEntity.ok().build();
+    }
+}

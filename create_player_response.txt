@@ -1,0 +1,36 @@
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:8080 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8080...
+* Connected to localhost (::1) port 8080
+> POST /api/players/create HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Content-Type: application/json
+> Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1fMTc2NjU4MzU2NyIsImlhdCI6MTc2NjU4MzU2NywiZXhwIjoxNzk4MTE5NTY3fQ.qCefZ4-CSTILSggwUU7eby3PelVGPRiBJeDwa6JC7JU
+> Content-Length: 67
+> 
+} [67 bytes data]
+* upload completely sent off: 67 bytes
+< HTTP/1.1 200 
+< Vary: Origin
+< Vary: Access-Control-Request-Method
+< Vary: Access-Control-Request-Headers
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Date: Wed, 24 Dec 2025 13:39:27 GMT
+< 
+{ [115 bytes data]
+100   176    0   109  100    67   5525   3396 --:--:-- --:--:-- --:--:--  9263
+* Connection #0 to host localhost left intact
+{"id":1,"name":"Ronnie O'Sullivan","nationality":"British","matchesPlayed":0,"matchesWon":0,"highestBreak":0}
