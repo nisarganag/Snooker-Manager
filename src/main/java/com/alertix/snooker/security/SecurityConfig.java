@@ -56,7 +56,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
-                        .requestMatchers("/ws/**").permitAll() // WebSocket public endpoint
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/api/matches/all", "/api/matches/get", "/api/matches/filter",
+                                "/api/matches/tournament")
+                        .permitAll()
+                        .requestMatchers("/api/tournaments/all", "/api/tournaments/get").permitAll()
+                        .requestMatchers("/api/players/all", "/api/players/get", "/api/players/search").permitAll()
                         .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());

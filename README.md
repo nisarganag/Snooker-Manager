@@ -5,14 +5,16 @@ A comprehensive backend for managing Snooker Tournaments, Players, Matches, and 
 ## Features
 
 - **User Authentication**: JWT-based secure login and registration with Role-Based Access Control (Admin, Referee, User).
-- **Tournament Management**: Create, update, and manage tournaments.
-- **Match Management**: Schedule matches, assign players, and update statuses.
+- **Tournament Management**: Create, update, and manage tournaments including advanced bracket structures.
+- **Match Management**: Schedule matches, assign players/referees, and track timeline events (pots, fouls, undo logic).
 - **Live Scoring**: Real-time score updates via WebSocket (STOMP).
-- **Player Management**: meaningful statistics tracking.
+- **Player Management**: Search functionality and statistics tracking.
+- **Broadcast Ready**: Custom OBS Overlay settings per tournament.
+- **Public API**: Authenticated-free access for frontend home page (Live Scores, Schedules).
 
 ## Tech Stack
 
-- **Java 21**, **Spring Boot 3.4.0**
+- **Java 21**, **Spring Boot 3.5.9**
 - **Spring Security** (JWT)
 - **Spring Data JPA** (MySQL)
 - **WebSocket** (STOMP)

@@ -20,6 +20,8 @@ public interface MatchService {
 
     Match updateMatch(Long id, MatchRequest request);
 
+    List<Match> getMatchesByStatus(MatchStatus status);
+
     Match updateMatchStatus(Long id, MatchStatus status);
 
     void deleteMatch(Long id);

@@ -73,6 +73,11 @@ public class MatchController {
         }
     }
 
+    @PostMapping("/filter")
+    public List<Match> getMatchesByStatus(@RequestBody MatchStatusRequest request) {
+        return matchService.getMatchesByStatus(request.getStatus());
+    }
+
     @PostMapping("/status")
     @PreAuthorize("hasRole('ADMIN') or hasRole('REFEREE')")
     public ResponseEntity<Match> updateMatchStatus(@RequestBody MatchStatusRequest request) {

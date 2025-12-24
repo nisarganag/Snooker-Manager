@@ -124,6 +124,14 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    public List<Match> getMatchesByStatus(MatchStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Match status cannot be null");
+        }
+        return matchRepository.findByStatus(status);
+    }
+
+    @Override
     public Match updateMatchStatus(Long id, MatchStatus status) {
         if (id == null) {
             throw new IllegalArgumentException("Match ID cannot be null");
