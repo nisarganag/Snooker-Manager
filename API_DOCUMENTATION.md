@@ -183,22 +183,64 @@ Register a new user.
 - **Method**: `POST`
 - **Body**: `Match` object
 
-### Update Match Status (Admin/Referee)
+### Update Match (Admin/Referee)
 
-- **URL**: `/api/matches/status`
+- **URL**: `/api/matches/update`
 - **Method**: `POST`
-- **Body**: `MatchStatusRequest`
+- **Body**: `UpdateMatchRequest`
   ```json
   {
-    "matchId": 1,
-    "status": "LIVE"
-    // Statuses: SCHEDULED, LIVE, COMPLETED, CANCELLED
+    "id": 1,
+    "player1Id": 2,
+    "player2Id": 3,
+    "refereeId": 4,
+    "bestOfFrames": 9,
+    "startTime": "2023-10-10T14:00:00"
   }
   ```
 
 ---
 
-## 5. WebSocket API (Live Scores)
+## 5. Overlay Controller (`/api/overlays`)
+
+### Get Overlay Config
+
+- **URL**: `/api/overlays/get`
+- **Body**: `IdRequest` (`id` is Tournament ID)
+- **Response**: `OverlayConfig`
+
+### Update Overlay Config (Admin)
+
+- **URL**: `/api/overlays/update`
+- **Body**: `OverlayConfigRequest`
+  ```json
+  {
+    "tournamentId": 1,
+    "fontFamily": "Roboto",
+    "primaryColor": "#FF0000",
+    "secondaryColor": "#FFFFFF",
+    "layoutPreset": "MODERN"
+  }
+  ```
+
+---
+
+## 6. Player Search
+
+### Search Players
+
+- **URL**: `/api/players/search`
+- **Body**: `SearchRequest`
+  ```json
+  {
+    "query": "ronnie"
+  }
+  ```
+- **Response**: `List<Player>`
+
+---
+
+## 7. WebSocket API (Live Scores)
 
 ### Configuration
 

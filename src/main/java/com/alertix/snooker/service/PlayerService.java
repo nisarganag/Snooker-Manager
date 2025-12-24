@@ -15,4 +15,6 @@ public interface PlayerService {
     Player updatePlayer(Long id, Player player);
 
     void deletePlayer(Long id);
+
+    List<Player> searchPlayers(String query);
 }

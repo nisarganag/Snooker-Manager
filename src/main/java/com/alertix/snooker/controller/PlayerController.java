@@ -57,4 +57,22 @@ public class PlayerController {
         playerService.deletePlayer(request.getId());
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/search")
+    public List<Player> searchPlayers(@RequestBody SearchRequest request) {
+        return playerService.searchPlayers(request.getQuery());
+    }
+
+    // Inner DTO
+    public static class SearchRequest {
+        private String query;
+
+        public String getQuery() {
+            return query;
+        }
+
+        public void setQuery(String query) {
+            this.query = query;
+        }
+    }
 }

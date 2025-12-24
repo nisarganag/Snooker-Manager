@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.alertix.snooker.domain.Match;
 import com.alertix.snooker.domain.MatchStatus;
+import com.alertix.snooker.payload.request.MatchRequest;
 
 public interface MatchService {
     List<Match> getAllMatches();
@@ -13,9 +14,9 @@ public interface MatchService {
 
     Optional<Match> getMatchById(Long id);
 
-    Match createMatch(Match match);
+    Match createMatch(MatchRequest request);
 
-    Match updateMatch(Long id, Match match);
+    Match updateMatch(Long id, MatchRequest request);
 
     Match updateMatchStatus(Long id, MatchStatus status);
 

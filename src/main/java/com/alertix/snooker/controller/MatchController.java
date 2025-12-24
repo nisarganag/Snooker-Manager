@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alertix.snooker.domain.Match;
 import com.alertix.snooker.payload.request.IdRequest;
+import com.alertix.snooker.payload.request.MatchRequest;
 import com.alertix.snooker.payload.request.MatchStatusRequest;
 import com.alertix.snooker.service.MatchService;
 
@@ -43,17 +44,30 @@ public class MatchController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public Match createMatch(@RequestBody Match match) {
-        return matchService.createMatch(match);
+    public Match createMatch(@RequestBody MatchRequest request) {
+        return matchService.createMatch(request);
     }
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('ADMIN') or hasRole('REFEREE')")
-    public ResponseEntity<Match> updateMatch(@RequestBody Match match) {
+    public ResponseEntity<Match> updateMatch(@RequestBody UpdateMatchRequest request) {
         try {
-            return ResponseEntity.ok(matchService.updateMatch(match.getId(), match));
+            return ResponseEntity.ok(matchService.updateMatch(request.getId(), request));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Update DTO needs ID
+    public static class UpdateMatchRequest extends MatchRequest {
+        private Long id;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
         }
     }
 

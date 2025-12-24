@@ -1,8 +1,5 @@
 package com.alertix.snooker.security;
 
-import com.alertix.snooker.security.jwt.AuthEntryPointJwt;
-import com.alertix.snooker.security.jwt.AuthTokenFilter;
-import com.alertix.snooker.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.alertix.snooker.security.jwt.AuthEntryPointJwt;
+import com.alertix.snooker.security.jwt.AuthTokenFilter;
+import com.alertix.snooker.security.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableMethodSecurity
@@ -33,11 +34,8 @@ public class SecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
-        authProvider.setUserDetailsService(userDetailsService);
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 

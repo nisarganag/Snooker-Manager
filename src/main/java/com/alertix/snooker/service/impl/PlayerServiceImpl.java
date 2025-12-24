@@ -59,4 +59,12 @@ public class PlayerServiceImpl implements PlayerService {
         }
         playerRepository.deleteById(id);
     }
+
+    @Override
+    public List<Player> searchPlayers(String query) {
+        if (query == null) {
+            return List.of();
+        }
+        return playerRepository.findByNameContainingIgnoreCase(query);
+    }
 }
