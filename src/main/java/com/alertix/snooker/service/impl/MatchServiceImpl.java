@@ -22,6 +22,8 @@ import com.alertix.snooker.repository.MatchRepository;
 import com.alertix.snooker.repository.PlayerRepository;
 import com.alertix.snooker.repository.TournamentRepository;
 import com.alertix.snooker.repository.UserRepository;
+import com.alertix.snooker.utils.EmailTemplateUtils;
+import com.alertix.snooker.service.EmailService;
 import com.alertix.snooker.service.MatchService;
 
 @Service
@@ -43,6 +45,9 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     private FrameRepository frameRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public List<Match> getAllMatches() {
@@ -138,6 +143,33 @@ public class MatchServiceImpl implements MatchService {
         }
         Match m = matchRepository.findById(id).orElseThrow(() -> new RuntimeException("Match not found"));
         m.setStatus(status);
+
+        if (status == MatchStatus.COMPLETED) {
+            // Calculate scores (Frames won)
+            List<Frame> frames = frameRepository.findByMatchId(m.getId());
+            int p1Frames = 0;
+            int p2Frames = 0;
+            for (Frame f : frames) {
+                if (f.getPointsPlayer1() > f.getPointsPlayer2())
+                    p1Frames++;
+                else if (f.getPointsPlayer2() > f.getPointsPlayer1())
+                    p2Frames++;
+            }
+
+            String winner = p1Frames > p2Frames ? m.getPlayer1().getName()
+                    : (p2Frames > p1Frames ? m.getPlayer2().getName() : "Draw");
+
+            String subject = "Match Result: " + m.getPlayer1().getName() + " vs " + m.getPlayer2().getName();
+            String content = EmailTemplateUtils.getMatchResultEmail(
+                    m.getTournament() != null ? m.getTournament().getName() : "Friendly Match",
+                    m.getPlayer1().getName(),
+                    m.getPlayer2().getName(),
+                    p1Frames,
+                    p2Frames,
+                    winner);
+            emailService.broadcastMatchResult(subject, content);
+        }
+
         return matchRepository.save(m);
     }
 

@@ -1,5 +1,6 @@
 package com.alertix.snooker.service.impl;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -12,6 +13,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.alertix.snooker.domain.NewsletterSubscriber;
+import com.alertix.snooker.repository.NewsletterSubscriberRepository;
 import com.alertix.snooker.service.EmailService;
 
 import jakarta.mail.MessagingException;
@@ -43,6 +46,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${app.mail.promo.username}")
     private String promoFrom;
 
+    @Autowired
+    private NewsletterSubscriberRepository newsletterSubscriberRepository;
+
     @Override
     @Async
     public void sendInfoEmail(String to, String subject, String content) {
@@ -59,6 +65,16 @@ public class EmailServiceImpl implements EmailService {
     @Async
     public void sendPromoEmail(String to, String subject, String content) {
         sendEmail(promoSender, promoFrom, to, subject, content);
+    }
+
+    @Override
+    @Async
+    public void broadcastMatchResult(String subject, String content) {
+        List<NewsletterSubscriber> subscribers = newsletterSubscriberRepository.findByIsActiveTrue();
+        for (NewsletterSubscriber sub : subscribers) {
+            // Using Promo sender for newsletters
+            sendEmail(promoSender, promoFrom, sub.getEmail(), subject, content);
+        }
     }
 
     private void sendEmail(JavaMailSender sender, String from, String to, String subject, String content) {

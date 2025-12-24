@@ -6,4 +6,7 @@ public interface EmailService {
     void sendSupportEmail(String to, String subject, String content);
 
     void sendPromoEmail(String to, String subject, String content);
+
+    // Broadcast
+    void broadcastMatchResult(String subject, String content);
 }

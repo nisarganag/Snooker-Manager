@@ -61,4 +61,25 @@ public class EmailTemplateUtils {
                 "<p style='margin-top: 30px; font-size: 13px; color: #999;'>Link expires in 24 hours.</p>";
         return getBaseTemplate("Password Reset", body);
     }
+
+    public static String getMatchResultEmail(String tournamentName, String p1Name, String p2Name, int score1,
+            int score2, String winnerName) {
+        String body = "<h2 style='color: " + HEADER_COLOR + "; margin-top: 0;'>Match Result</h2>" +
+                "<p style='text-align: center; color: #777;'>" + tournamentName + "</p>" +
+                "<div style='background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;'>"
+                +
+                "<div style='display: flex; justify-content: space-around; align-items: center;'>" +
+                "<div style='flex: 1;'><h3>" + p1Name + "</h3></div>" +
+                "<div style='background: " + ACCENT_COLOR
+                + "; color: white; padding: 10px 20px; border-radius: 4px; font-weight: bold; font-size: 24px;'>" +
+                score1 + " - " + score2 +
+                "</div>" +
+                "<div style='flex: 1;'><h3>" + p2Name + "</h3></div>" +
+                "</div>" +
+                "<p style='margin-top: 20px; font-weight: bold; color: " + ACCENT_COLOR + ";'>Winner: " + winnerName
+                + "!</p>" +
+                "</div>" +
+                "<a href='#' class='button'>View Full Details</a>";
+        return getBaseTemplate("New Match Result!", body);
+    }
 }

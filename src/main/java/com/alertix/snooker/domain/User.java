@@ -3,6 +3,7 @@ package com.alertix.snooker.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -29,6 +31,10 @@ public class User {
     private String email;
 
     private String password;
+
+    @Lob
+    @Column(length = 2097152) // 2MB
+    private byte[] profilePhoto;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
@@ -73,6 +79,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public byte[] getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(byte[] profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 
     public Set<ERole> getRoles() {
