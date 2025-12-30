@@ -241,6 +241,6 @@ Built with ❤️ using Spring Boot and modern Java technologies.
 
 **[⬆ Back to Top](#-snooker-tournament-manager)**
 
-Made with 🎱 by [Your Name]
+Made with 🎱 by Nisarga
 
 </div>
