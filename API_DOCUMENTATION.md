@@ -459,3 +459,47 @@ Register a new user.
 - **Method**: `POST`
 - **Body**: `IdRequest`
 - **Response**: Success message
+
+---
+
+## 10. YouTube Controller (`/api/youtube`)
+
+### Get Live Streams
+
+Fetches all currently live streams from the UPBSA YouTube channel.
+
+- **URL**: `/api/youtube/live-streams`
+- **Method**: `GET`
+- **Authentication**: Not required (public endpoint)
+- **Response**: `List<YouTubeLiveStreamResponse>`
+  ```json
+  [
+    {
+      "id": "dQw4w9WgXcQ",
+      "youtubeStreamId": "dQw4w9WgXcQ",
+      "title": "Aditya Mehta vs Pankaj Advani - UPBSA Championship 2025",
+      "description": "Live coverage of the championship match",
+      "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+      "viewerCount": 1247,
+      "startTime": "2025-12-30T14:30:00Z",
+      "isLive": true,
+      "channelTitle": "UPBSA",
+      "player1": {
+        "name": "Aditya Mehta"
+      },
+      "player2": {
+        "name": "Pankaj Advani"
+      },
+      "parsedTitle": true
+    }
+  ]
+  ```
+
+**Notes:**
+
+- Results are cached for 60 seconds to minimize API quota usage
+- Player names are automatically parsed from video titles
+- If parsing fails, `parsedTitle` will be `false` and `originalTitle` will contain the raw title
+- Supported title formats: "Player1 vs Player2", "Player1 VS Player2", "Player1 v/s Player2", "Player1 - Player2"
+- **Fallback behavior**: If no live streams are active, returns the most recent completed streams from the channel
+- `isLive` field indicates whether the stream is currently live (`true`) or a recent completed broadcast (`false`)

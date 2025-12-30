@@ -124,6 +124,21 @@
     {
       "name": "env",
       "type": "java.lang.String"
+    },
+    {
+      "name": "youtube.api.key",
+      "type": "java.lang.String",
+      "description": "YouTube Data API v3 key for fetching live streams"
+    },
+    {
+      "name": "youtube.channel.id",
+      "type": "java.lang.String",
+      "description": "YouTube channel ID for UPBSA"
+    },
+    {
+      "name": "youtube.cache.duration",
+      "type": "java.lang.Integer",
+      "description": "Cache duration in milliseconds for YouTube API responses"
     }
   ]
 }

@@ -5,9 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import org.springframework.cache.annotation.EnableCaching;
+
 @SpringBootApplication
 @EnableAsync
 @EnableScheduling
+@EnableCaching
 public class SnookerApplication {
 
 	public static void main(String[] args) {

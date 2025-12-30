@@ -64,8 +64,7 @@ public class UserServiceImpl implements UserService {
             user.setRoles(roles);
         }
 
-        @SuppressWarnings("null")
-        User savedUser = Objects.requireNonNull(userRepository.save(user));
+        User savedUser = userRepository.save(user);
         return savedUser;
     }
 

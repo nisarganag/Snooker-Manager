@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/api/youtube/**").permitAll()
                         .requestMatchers("/api/matches/all", "/api/matches/get", "/api/matches/filter",
                                 "/api/matches/tournament")
                         .permitAll()
