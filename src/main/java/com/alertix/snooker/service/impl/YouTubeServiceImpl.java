@@ -135,7 +135,21 @@ public class YouTubeServiceImpl implements YouTubeService {
         response.setTitle(video.getSnippet().getTitle());
         response.setDescription(video.getSnippet().getDescription());
         response.setChannelTitle(video.getSnippet().getChannelTitle());
-        response.setIsLive(isLive);
+
+        // Determine actual live status from YouTube API data
+        boolean actuallyLive = isLive;
+        if (video.getLiveStreamingDetails() != null) {
+            // Check if the stream has an actual end time - if so, it's not live
+            if (video.getLiveStreamingDetails().getActualEndTime() != null) {
+                actuallyLive = false;
+            }
+            // Also check the liveBroadcastContent field if available
+            if (video.getSnippet().getLiveBroadcastContent() != null) {
+                String broadcastContent = video.getSnippet().getLiveBroadcastContent();
+                actuallyLive = "live".equals(broadcastContent);
+            }
+        }
+        response.setIsLive(actuallyLive);
 
         // Thumbnail (prefer high quality)
         if (video.getSnippet().getThumbnails() != null) {
