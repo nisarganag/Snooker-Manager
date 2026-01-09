@@ -1,46 +1,61 @@
 package com.alertix.snooker.domain;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "overlay_configs")
+@Table(name = "overlay_config")
 public class OverlayConfig {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false)
+    private Integer id = 1; // Always 1 - single global configuration
 
-    @OneToOne
-    @JoinColumn(name = "tournament_id", referencedColumnName = "id")
-    private Tournament tournament;
+    @Column(name = "font_family", length = 50)
+    private String fontFamily = "Rajdhani";
 
-    private String fontFamily;
-    private String primaryColor; // Hex Code
-    private String secondaryColor; // Hex Code
-    private String layoutPreset; // "STANDARD", "COMPACT", "MODERN"
+    @Column(name = "primary_color", length = 7)
+    private String primaryColor = "#00ff41";
+
+    @Column(name = "secondary_color", length = 7)
+    private String secondaryColor = "#ffffff";
+
+    @Column(name = "background_color", length = 7)
+    private String backgroundColor = "#0a0f0a";
+
+    @Column(name = "accent_color", length = 7)
+    private String accentColor = "#00cc33";
+
+    @Column(name = "layout_preset", length = 20)
+    private String layoutPreset = "MODERN";
+
+    @Column(name = "show_player_photos")
+    private Boolean showPlayerPhotos = true;
+
+    @Column(name = "show_flags")
+    private Boolean showFlags = true;
+
+    @Column(name = "animation_speed", length = 20)
+    private String animationSpeed = "normal";
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public OverlayConfig() {
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public Long getId() {
+    // Getters and Setters
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Tournament getTournament() {
-        return tournament;
-    }
-
-    public void setTournament(Tournament tournament) {
-        this.tournament = tournament;
+    public void setId(Integer id) {
+        this.id = 1; // Always enforce id = 1
     }
 
     public String getFontFamily() {
@@ -67,11 +82,59 @@ public class OverlayConfig {
         this.secondaryColor = secondaryColor;
     }
 
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public String getAccentColor() {
+        return accentColor;
+    }
+
+    public void setAccentColor(String accentColor) {
+        this.accentColor = accentColor;
+    }
+
     public String getLayoutPreset() {
         return layoutPreset;
     }
 
     public void setLayoutPreset(String layoutPreset) {
         this.layoutPreset = layoutPreset;
+    }
+
+    public Boolean getShowPlayerPhotos() {
+        return showPlayerPhotos;
+    }
+
+    public void setShowPlayerPhotos(Boolean showPlayerPhotos) {
+        this.showPlayerPhotos = showPlayerPhotos;
+    }
+
+    public Boolean getShowFlags() {
+        return showFlags;
+    }
+
+    public void setShowFlags(Boolean showFlags) {
+        this.showFlags = showFlags;
+    }
+
+    public String getAnimationSpeed() {
+        return animationSpeed;
+    }
+
+    public void setAnimationSpeed(String animationSpeed) {
+        this.animationSpeed = animationSpeed;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

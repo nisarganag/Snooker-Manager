@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/youtube/**").permitAll()
+                        .requestMatchers("/api/overlays/get").permitAll()
                         .requestMatchers("/api/matches/all", "/api/matches/get", "/api/matches/filter",
                                 "/api/matches/tournament")
                         .permitAll()

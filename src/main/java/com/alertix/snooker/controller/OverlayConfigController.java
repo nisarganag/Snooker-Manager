@@ -1,17 +1,22 @@
 package com.alertix.snooker.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alertix.snooker.domain.OverlayConfig;
-import com.alertix.snooker.payload.request.IdRequest;
-import com.alertix.snooker.service.OverlayConfigService;
+import com.alertix.snooker.payload.request.OverlayConfigRequest;
+import com.alertix.snooker.payload.response.MessageResponse;
+import com.alertix.snooker.payload.response.OverlayConfigResponse;
+import com.alertix.snooker.service.OverlayService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -19,79 +24,45 @@ import com.alertix.snooker.service.OverlayConfigService;
 public class OverlayConfigController {
 
     @Autowired
-    private OverlayConfigService overlayConfigService;
+    private OverlayService overlayService;
 
-    @PostMapping("/get")
-    public ResponseEntity<OverlayConfig> getOverlayConfig(@RequestBody IdRequest request) {
-        OverlayConfig config = overlayConfigService.getOverlayConfig(request.getId());
-        if (config != null) {
+    /**
+     * Get the global overlay configuration
+     * Public endpoint - accessible without authentication (needed for OBS Browser
+     * Source)
+     */
+    @GetMapping("/get")
+    public ResponseEntity<?> getOverlayConfig() {
+        try {
+            OverlayConfigResponse config = overlayService.getGlobalConfig();
             return ResponseEntity.ok(config);
+        } catch (Exception e) {
+            return ResponseEntity.status(404)
+                    .body(new MessageResponse("No overlay configuration found"));
         }
-        return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Update the global overlay configuration
+     * Admin only endpoint
+     */
     @PostMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<OverlayConfig> updateOverlayConfig(@RequestBody OverlayConfigRequest request) {
+    public ResponseEntity<?> updateOverlayConfig(@RequestBody OverlayConfigRequest request) {
         try {
-            OverlayConfig config = new OverlayConfig();
-            config.setFontFamily(request.getFontFamily());
-            config.setPrimaryColor(request.getPrimaryColor());
-            config.setSecondaryColor(request.getSecondaryColor());
-            config.setLayoutPreset(request.getLayoutPreset());
+            OverlayConfigResponse updatedConfig = overlayService.updateGlobalConfig(request);
 
-            return ResponseEntity.ok(overlayConfigService.saveOrUpdateOverlayConfig(request.getTournamentId(), config));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Overlay configuration updated successfully");
+            response.put("config", updatedConfig);
 
-    // Inner DTO for Request
-    public static class OverlayConfigRequest {
-        private Long tournamentId;
-        private String fontFamily;
-        private String primaryColor;
-        private String secondaryColor;
-        private String layoutPreset;
-
-        public Long getTournamentId() {
-            return tournamentId;
-        }
-
-        public void setTournamentId(Long tournamentId) {
-            this.tournamentId = tournamentId;
-        }
-
-        public String getFontFamily() {
-            return fontFamily;
-        }
-
-        public void setFontFamily(String fontFamily) {
-            this.fontFamily = fontFamily;
-        }
-
-        public String getPrimaryColor() {
-            return primaryColor;
-        }
-
-        public void setPrimaryColor(String primaryColor) {
-            this.primaryColor = primaryColor;
-        }
-
-        public String getSecondaryColor() {
-            return secondaryColor;
-        }
-
-        public void setSecondaryColor(String secondaryColor) {
-            this.secondaryColor = secondaryColor;
-        }
-
-        public String getLayoutPreset() {
-            return layoutPreset;
-        }
-
-        public void setLayoutPreset(String layoutPreset) {
-            this.layoutPreset = layoutPreset;
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(new MessageResponse("Failed to update overlay configuration"));
         }
     }
 }

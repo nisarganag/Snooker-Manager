@@ -503,3 +503,98 @@ Fetches all currently live streams from the UPBSA YouTube channel.
 - Supported title formats: "Player1 vs Player2", "Player1 VS Player2", "Player1 v/s Player2", "Player1 - Player2"
 - **Fallback behavior**: If no live streams are active, returns the most recent completed streams from the channel
 - `isLive` field indicates whether the stream is currently live (`true`) or a recent completed broadcast (`false`)
+
+---
+
+## 11. Overlay Configuration Controller (`/api/overlays`)
+
+### Get Overlay Configuration
+
+Retrieves the global overlay configuration for OBS Browser Source.
+
+- **URL**: `/api/overlays/get`
+- **Method**: `GET`
+- **Authentication**: Not required (public endpoint)
+- **Response**: `OverlayConfigResponse`
+  ```json
+  {
+    "fontFamily": "Rajdhani",
+    "primaryColor": "#00ff41",
+    "secondaryColor": "#ffffff",
+    "backgroundColor": "#0a0f0a",
+    "accentColor": "#00cc33",
+    "layoutPreset": "MODERN",
+    "showPlayerPhotos": true,
+    "showFlags": true,
+    "animationSpeed": "normal"
+  }
+  ```
+
+**Notes:**
+- Public endpoint accessible without authentication
+- Used by OBS Browser Source to fetch overlay styling
+- Returns default configuration if none exists
+
+### Update Overlay Configuration
+
+Updates the global overlay configuration (Admin only).
+
+- **URL**: `/api/overlays/update`
+- **Method**: `POST`
+- **Authentication**: Required (Admin role)
+- **Body**: `OverlayConfigRequest`
+  ```json
+  {
+    "fontFamily": "Roboto",
+    "primaryColor": "#ff0000",
+    "secondaryColor": "#ffffff",
+    "backgroundColor": "#1a1a1a",
+    "accentColor": "#cc0000",
+    "layoutPreset": "CLASSIC",
+    "showPlayerPhotos": true,
+    "showFlags": true,
+    "animationSpeed": "normal"
+  }
+  ```
+- **Response**: Success message with updated configuration
+  ```json
+  {
+    "message": "Overlay configuration updated successfully",
+    "config": {
+      "fontFamily": "Roboto",
+      "primaryColor": "#ff0000",
+      "secondaryColor": "#ffffff",
+      "backgroundColor": "#1a1a1a",
+      "accentColor": "#cc0000",
+      "layoutPreset": "CLASSIC",
+      "showPlayerPhotos": true,
+      "showFlags": true,
+      "animationSpeed": "normal"
+    }
+  }
+  ```
+
+**Field Validation:**
+
+| Field | Type | Validation | Default |
+|-------|------|-----------|---------|
+| `fontFamily` | String | Must be one of: Rajdhani, Inter, Roboto, Open Sans, Montserrat | "Rajdhani" |
+| `primaryColor` | String | Valid hex code (#RRGGBB) | "#00ff41" |
+| `secondaryColor` | String | Valid hex code (#RRGGBB) | "#ffffff" |
+| `backgroundColor` | String | Valid hex code (#RRGGBB) | "#0a0f0a" |
+| `accentColor` | String | Valid hex code (#RRGGBB) | "#00cc33" |
+| `layoutPreset` | String | Must be one of: MODERN, CLASSIC, COMPACT | "MODERN" |
+| `showPlayerPhotos` | Boolean | true or false | true |
+| `showFlags` | Boolean | true or false | true |
+| `animationSpeed` | String | Must be one of: slow, normal, fast | "normal" |
+
+**Notes:**
+- All fields are optional (supports partial updates)
+- Only one global configuration exists (id = 1)
+- Admin role required for updates
+- Invalid values return 400 Bad Request with error message
+
+**OBS Browser Source URL:**
+```
+http://localhost:5173/overlay\?match\=123
+```
